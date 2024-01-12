@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>単語カード/单词卡</title>
+  <style>
+    #flashcard {
+      width: 600px;
+      height: 200px;
+      border: 1px solid #000;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 48px;
+    }
+
+    /* ボタンのスタイルを変更してサイズを大きくする */
+    button {
+      font-size: 24px;
+      /* フォントサイズを大きくする */
+      padding: 10px 16px;
+      /* パディングを増やしてボタンのサイズを調整する */
+      margin: 5px; /* マージンを追加してボタンを配置しやすくする */
+    }
+
+    body {
+      background-color: #e7f6e1;
+    }
+
+    h1 {
+      color: blue;
+    }
+
+    #result {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="flashcard">Click to see definition/按下键看(第20课)单词卡</div>
+  <button onclick="showAnswer()">按键看下一个</button>
+  <button onclick="checkAnswer(true)">和我想的一样</button>
+  <button onclick="checkAnswer(false)">和我想的不一样</button>
+
+  <div id="result">正解: 0 回 不正解: 0 回</div>
+
+  <script>
+    const flashcard = document.getElementById('flashcard');
+    const resultDiv = document.getElementById('result');
+    const synth = window.speechSynthesis;
+
+    // フラッシュカードの情報
+    const flashcardData = [
+      // 省略...
+      { term: 'JavaScript', definition: '1.生活様式' }, { term: 'HTML', definition: '生活方式' },
+{ term: 'JavaScript', definition: '2.生活様式の変化' }, { term: 'HTML', definition: '生活方式的变化' },
+{ term: 'JavaScript', definition: '3.春節期間中に' }, { term: 'HTML', definition: '在春节里' },
+{ term: 'JavaScript', definition: '4.旅行に出かける' }, { term: 'HTML', definition: '出去旅行' },
+{ term: 'JavaScript', definition: '5.旅行に出かける人' }, { term: 'HTML', definition: '出去旅行的人' },
+{ term: 'JavaScript', definition: '6.西安に旅行に行く' }, { term: 'HTML', definition: '去西安旅行' },
+{ term: 'JavaScript', definition: '7.西安に旅行に行くつもり' }, { term: 'HTML', definition: '打算去西安旅行' },
+{ term: 'JavaScript', definition: '8.西安に行ったことがない' }, { term: 'HTML', definition: '没去过西安' },
+{ term: 'JavaScript', definition: '9.一人の友達がいる' }, { term: 'HTML', definition: '有个朋友' },
+{ term: 'JavaScript', definition: '10.西安に住んでいる' }, { term: 'HTML', definition: '住在西安' },
+{ term: 'JavaScript', definition: '11.一緒に行きましょう' }, { term: 'HTML', definition: '一起去吧' },
+{ term: 'JavaScript', definition: '12.列車の切符を買う' }, { term: 'HTML', definition: '买火车票' },
+{ term: 'JavaScript', definition: '13.私は友達を頼む' }, { term: 'HTML', definition: '我请朋友' },
+{ term: 'JavaScript', definition: '14.友達のガイドになる' }, { term: 'HTML', definition: '当我们的导游' },
+{ term: 'JavaScript', definition: '15.今回の旅行' }, { term: 'HTML', definition: '这次旅行' },
+{ term: 'JavaScript', definition: '16.楽しい春節であるように願う' }, { term: 'HTML', definition: '祝春节愉快' },
+{ term: 'JavaScript', definition: '17.私たちみんな' }, { term: 'HTML', definition: '我们大家' },
+{ term: 'JavaScript', definition: '18.この仕事' }, { term: 'HTML', definition: '这个工作' },
+      // 他の単語と定義を追加
+      { term: 'JavaScript', definition: '私は中国語を勉強しているところだ。' },
+      { term: 'HTML', definition: '我在学习汉语。👍赞' },
+      { term: 'JavaScript', definition: '全部の内容を勉強しました。' },
+      { term: 'HTML', definition: '我学完了全部！👍赞' },
+    ];
+
+    let currentIndex = 0;
+    let correctCount = 0;
+    let incorrectCount = 0;
+
+    // 答えを表示し、音声を再生する関数
+    function showAnswer() {
+      const currentData = flashcardData[currentIndex];
+      flashcard.textContent = currentData.definition;
+      // termがHTMLの時に中国だから　HTMLの時だけspeakTextを呼び出す。
+      if (currentData.term === 'HTML') {
+        speakText(currentData.definition);
+      }
+      currentIndex = (currentIndex + 1) % flashcardData.length;
+    }
+
+    // テキストを音声に変換して再生する関数
+    function speakText(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN'; // 中国語の言語コード
+      synth.speak(utterance);
+    }
+
+    // 正解不正解の判断
+    function checkAnswer(isCorrect) {
+      // ここに正解不正解の処理を追加する
+      if (isCorrect) {
+        correctCount++;
+      } else {
+        incorrectCount++;
+      }
+
+      // 結果を表示する
+      displayResult();
+    }
+
+    // 結果を表示する関数
+    function displayResult() {
+      resultDiv.textContent = `正解: ${correctCount} 回 不正解: ${incorrectCount} 回`;
+    }
+
+    // 最初のカードを表示
+    flashcard.textContent = '按下键看(第20课)单词卡';
+
+    // フラッシュカードがクリックされた時の処理
+    flashcard.addEventListener('click', () => {
+      flashcard.style.transform = 'rotateY(180deg)';
+      setTimeout(() => {
+        showAnswer(); // 180度回転後に答えを表示する
+        flashcard.style.transform = 'rotateY(0deg)'; // 答え表示後に元の位置に戻す
+      }, 500); // 500ミリ秒後に答えを表示する（transitionの時間と合わせる）
+    });
+  </script>
+</body>
+
+</html>
